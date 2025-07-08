@@ -99,17 +99,27 @@ const App = () => {
 
     if (gameState.gameWon) return;
 
-    // Handle input
+    // Calculate difficulty multiplier based on player height
+    const playerHeight = gameState.groundY - player.y;
+    const maxHeight = gameState.groundY - gameState.levelHeight;
+    const heightProgress = Math.min(playerHeight / maxHeight, 1);
+    
+    // Progressive difficulty - gets more sensitive as you climb higher
+    const sensitivityMultiplier = 1 + (heightProgress * 2.5); // 1x to 3.5x sensitivity
+    const frictionReduction = Math.max(0.3, 0.8 - (heightProgress * 0.5)); // Less friction at height
+    const jumpSensitivity = 1 + (heightProgress * 0.8); // Slightly more jump power but harder to control
+
+    // Handle input with progressive sensitivity
     if (keys['ArrowLeft'] || keys['KeyA']) {
-      player.velocityX = -player.speed;
+      player.velocityX = -player.speed * sensitivityMultiplier;
     } else if (keys['ArrowRight'] || keys['KeyD']) {
-      player.velocityX = player.speed;
+      player.velocityX = player.speed * sensitivityMultiplier;
     } else {
-      player.velocityX *= 0.8; // Friction
+      player.velocityX *= frictionReduction; // Reduced friction = more sliding
     }
 
     if ((keys['ArrowUp'] || keys['KeyW'] || keys['Space']) && player.onGround) {
-      player.velocityY = -player.jumpPower;
+      player.velocityY = -player.jumpPower * jumpSensitivity;
       player.onGround = false;
     }
 
