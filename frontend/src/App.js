@@ -258,6 +258,16 @@ const App = () => {
     <div className="game-container">
       <div className="game-ui">
         <div className="level-indicator">Level: {currentLevel}</div>
+        <div className="sensitivity-indicator">
+          <span style={{ 
+            color: currentLevel > 2 ? '#ff6b6b' : currentLevel > 1 ? '#feca57' : '#4ecdc4',
+            fontWeight: 'bold' 
+          }}>
+            {currentLevel <= 1 ? 'Normal Controls' : 
+             currentLevel <= 2 ? 'Getting Slippery!' : 
+             currentLevel <= 3 ? 'Very Slippery!' : 'SUPER SLIPPERY!'}
+          </span>
+        </div>
         <div className="controls-info">
           Use ARROW KEYS or WASD to move • SPACE or UP to jump
         </div>
