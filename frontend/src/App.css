@@ -1,38 +1,170 @@
-.App {
-    text-align: center;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
 }
 
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.game-ui {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 800px;
+  margin-bottom: 10px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.level-indicator {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
+.controls-info {
+  font-size: 0.9rem;
+  color: #ffffff;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.game-canvas {
+  border: 4px solid #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  background: #87CEEB;
+}
+
+.victory-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #ff6b6b, #feca57);
+  color: white;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  animation: victoryPulse 2s infinite;
+}
+
+@keyframes victoryPulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.05); }
+}
+
+.victory-screen h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.victory-screen p {
+  font-size: 1.2rem;
+  margin-bottom: 25px;
+  opacity: 0.9;
+}
+
+.restart-button {
+  background: linear-gradient(135deg, #4ecdc4, #45b7d1);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+}
+
+.restart-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #45b7d1, #4ecdc4);
+}
+
+.restart-button:active {
+  transform: translateY(0);
+}
+
+.game-footer {
+  margin-top: 20px;
+  text-align: center;
+  color: #ffffff;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.game-footer p {
+  margin: 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+  .game-container {
+    padding: 10px;
+  }
+  
+  .game-canvas {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .game-ui {
+    width: 100%;
+    max-width: 800px;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+    gap: 10px;
+  }
+  
+  .controls-info {
+    font-size: 0.8rem;
+  }
+  
+  .victory-screen {
+    padding: 30px;
+    max-width: 90%;
+  }
+  
+  .victory-screen h1 {
+    font-size: 2rem;
+  }
 }
 
-.App-link {
-    color: #61dafb;
+/* Loading animation for smooth start */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.game-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Hover effects for interactive elements */
+.game-canvas:hover {
+  transform: scale(1.01);
+  transition: transform 0.3s ease;
+}
+
+/* Platform colors in game match UI theme */
+.game-canvas {
+  cursor: crosshair;
 }
