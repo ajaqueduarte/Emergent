@@ -177,8 +177,8 @@ const App = () => {
     }
 
     // Calculate current level based on player height
-    const playerHeight = gameState.groundY - player.y;
-    const newLevel = Math.floor(playerHeight / 100) + 1;
+    const currentPlayerHeight = gameState.groundY - player.y;
+    const newLevel = Math.floor(currentPlayerHeight / 100) + 1;
     setCurrentLevel(Math.max(1, Math.min(newLevel, 4)));
   };
 
