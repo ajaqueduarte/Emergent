@@ -68,7 +68,7 @@ const App = () => {
                     window.innerWidth <= 768;
       setIsMobile(mobile);
 
-      const canvas = canvasRef.current;
+    const canvas = canvasRef.current;
     canvas.width = isMobile ? Math.min(window.innerWidth - 40, 800) : 800;
     canvas.height = isMobile ? Math.min(window.innerHeight * 0.6, 600) : 600;
 
@@ -369,16 +369,15 @@ gameState.camera.y = Math.max(0, Math.min(gameState.camera.y, gameState.groundY 
             >
               →
             </button>
-          </div>
-          <div className="jump-controls">
             <button 
               className="control-button jump-button"
               onTouchStart={handleJump}
-              onMouseDown={handleJump}
+              //onMouseDown={handleJump}
             >
               JUMP
             </button>
           </div>
+          
         </div>
       )}
       {gameState === 'won' && (
