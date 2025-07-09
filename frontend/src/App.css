@@ -317,3 +317,10 @@ body {
 .game-canvas {
   cursor: crosshair;
 }
+.made-by {
+  margin-top: 20px;
+  text-align: center;
+  color: #ffffff;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}

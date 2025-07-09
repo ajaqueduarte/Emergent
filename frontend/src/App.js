@@ -389,6 +389,10 @@ gameState.camera.y = Math.max(0, Math.min(gameState.camera.y, gameState.groundY 
       <div className="game-footer">
         <p>Jump through the floor levels to reach the top!</p>
       </div>
+
+      <div className="made-by">
+        Made by Jaque Duarte
+      </div>
     </div>
   );
 };
