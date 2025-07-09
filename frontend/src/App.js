@@ -333,10 +333,6 @@ gameState.camera.y = Math.max(0, Math.min(gameState.camera.y, gameState.groundY 
              currentLevel <= 3 ? 'Very Slippery!' : 'SUPER SLIPPERY!'}
           </span>
         </div>
-        <div className="controls-info">
-          Use ARROW KEYS or WASD to move • SPACE or UP to jump
-          
-        </div>
       </div>
       
       <canvas 
