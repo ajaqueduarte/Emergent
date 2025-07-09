@@ -59,11 +59,21 @@ const App = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     
+    gameStateRef.current.canvasWidth = canvas.width;
+    gameStateRef.current.canvasHeight = canvas.height;
+
     // Detect mobile device
     const checkMobile = () => {
       const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
                     window.innerWidth <= 768;
       setIsMobile(mobile);
+
+      const canvas = canvasRef.current;
+    canvas.width = isMobile ? Math.min(window.innerWidth - 40, 800) : 800;
+    canvas.height = isMobile ? Math.min(window.innerHeight * 0.6, 600) : 600;
+
+    gameStateRef.current.canvasWidth = canvas.width;
+    gameStateRef.current.canvasHeight = canvas.height;
     };
     
     checkMobile();
