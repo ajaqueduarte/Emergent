@@ -5,6 +5,7 @@ const App = () => {
   const canvasRef = useRef(null);
   const [gameState, setGameState] = useState('playing'); // 'playing', 'won', 'gameOver'
   const [currentLevel, setCurrentLevel] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
   const gameStateRef = useRef({
     player: {
       x: 50,
@@ -58,6 +59,16 @@ const App = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     
+    // Detect mobile device
+    const checkMobile = () => {
+      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                    window.innerWidth <= 768;
+      setIsMobile(mobile);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
     // Calculate level height based on highest platform
     const highestPlatform = gameStateRef.current.platforms.reduce((highest, platform) => 
       platform.y < highest ? platform.y : highest, 500);
@@ -67,11 +78,13 @@ const App = () => {
     const handleKeyDown = (e) => {
       keysRef.current[e.key] = true;
       keysRef.current[e.code] = true;
+      e.preventDefault();
     };
 
     const handleKeyUp = (e) => {
       keysRef.current[e.key] = false;
       keysRef.current[e.code] = false;
+      e.preventDefault();
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -89,8 +102,9 @@ const App = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('resize', checkMobile);
     };
-  }, []);
+  }, []); 
 
   const update = () => {
     const gameState = gameStateRef.current;
@@ -180,6 +194,30 @@ const App = () => {
     const currentPlayerHeight = gameState.groundY - player.y;
     const newLevel = Math.floor(currentPlayerHeight / 100) + 1;
     setCurrentLevel(Math.max(1, Math.min(newLevel, 4)));
+
+    // Clamp player within world horizontally
+if (player.x < 0) {
+  player.x = 0;
+  player.velocityX = 0;
+}
+if (player.x + player.width > gameState.worldWidth) {
+  player.x = gameState.worldWidth - player.width;
+  player.velocityX = 0;
+}
+
+// Clamp player within world vertically (top)
+if (player.y < 0) {
+  player.y = 0;
+  player.velocityY = 0;
+}
+
+// Update camera to follow player
+gameState.camera.x = player.x - gameState.canvasWidth / 2;
+gameState.camera.x = Math.max(0, Math.min(gameState.camera.x, gameState.worldWidth - gameState.canvasWidth));
+
+gameState.camera.y = player.y - gameState.canvasHeight / 2;
+gameState.camera.y = Math.max(0, Math.min(gameState.camera.y, gameState.groundY - gameState.canvasHeight));
+
   };
 
   const render = (ctx) => {
@@ -253,7 +291,24 @@ const App = () => {
     setGameState('playing');
     setCurrentLevel(1);
   };
+  // Mobile touch controls
+  const handleTouchStart = (e, action) => {
+    e.preventDefault();
+    keysRef.current[action] = true;
+  };
 
+  const handleTouchEnd = (e, action) => {
+    e.preventDefault();
+    keysRef.current[action] = false;
+  };
+
+  const handleJump = (e) => {
+    e.preventDefault();
+    keysRef.current['Space'] = true;
+    setTimeout(() => {
+      keysRef.current['Space'] = false;
+    }, 100);
+  }; 
   return (
     <div className="game-container">
       <div className="game-ui">
@@ -270,16 +325,52 @@ const App = () => {
         </div>
         <div className="controls-info">
           Use ARROW KEYS or WASD to move • SPACE or UP to jump
+          
         </div>
       </div>
       
       <canvas 
         ref={canvasRef}
-        width={800}
-        height={600}
+        width={isMobile ? Math.min(window.innerWidth - 40, 800) : 800}
+        height={isMobile ? Math.min(window.innerHeight * 0.6, 600) : 600}
         className="game-canvas"
       />
-      
+       {/* Mobile Touch Controls */}
+       {isMobile && (
+        <div className="mobile-controls">
+          <div className="movement-controls">
+            <button 
+              className="control-button left-button"
+              onTouchStart={(e) => handleTouchStart(e, 'ArrowLeft')}
+              onTouchEnd={(e) => handleTouchEnd(e, 'ArrowLeft')}
+              onMouseDown={(e) => handleTouchStart(e, 'ArrowLeft')}
+              onMouseUp={(e) => handleTouchEnd(e, 'ArrowLeft')}
+              onMouseLeave={(e) => handleTouchEnd(e, 'ArrowLeft')}
+            >
+              ←
+            </button>
+            <button 
+              className="control-button right-button"
+              onTouchStart={(e) => handleTouchStart(e, 'ArrowRight')}
+              onTouchEnd={(e) => handleTouchEnd(e, 'ArrowRight')}
+              onMouseDown={(e) => handleTouchStart(e, 'ArrowRight')}
+              onMouseUp={(e) => handleTouchEnd(e, 'ArrowRight')}
+              onMouseLeave={(e) => handleTouchEnd(e, 'ArrowRight')}
+            >
+              →
+            </button>
+          </div>
+          <div className="jump-controls">
+            <button 
+              className="control-button jump-button"
+              onTouchStart={handleJump}
+              onMouseDown={handleJump}
+            >
+              JUMP
+            </button>
+          </div>
+        </div>
+      )}
       {gameState === 'won' && (
         <div className="victory-screen">
           <h1>🎉 Congratulations! 🎉</h1>
